@@ -1,0 +1,25 @@
+[sshd-lab]
+enabled   = true
+port      = ssh
+filter    = sshd-lab
+logpath   = /var/log/auth.log
+backend   = auto
+banaction = nftables-multiport
+maxretry  = 5
+findtime  = 5m
+bantime   = 1h
+# Ban progressivo para reincidentes (1h, 2h, 4h... até 5 semanas)
+bantime.increment = true
+bantime.factor    = 2
+bantime.maxtime   = 5w
+# Ajuste para sua rede/IP de administração para não se trancar fora
+ignoreip  = 127.0.0.1/8 ::1 10.0.0.0/24
+
+# Reincidentes (3 bans em 1 dia) ficam banidos por 1 semana
+[recidive]
+enabled  = true
+logpath  = /var/log/fail2ban.log
+banaction = nftables-allports
+bantime  = 1w
+findtime = 1d
+maxretry = 3
